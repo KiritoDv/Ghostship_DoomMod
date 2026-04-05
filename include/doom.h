@@ -37,9 +37,6 @@ extern void DoomDLL_Input(int pressed, unsigned char doomKey);
 extern void DoomDLL_ScreenCopy(uint8_t *rdram);
 extern void DoomDLL_ScreenWidth(uint8_t *rdram);
 extern void DoomDLL_ScreenHeight(uint8_t *rdram);
-extern void SpawnTV(void);
-extern void OnLoadArea(void* _);
 
-static const ALIGN_ASSET(2) char tv_model[] = "__OTR__objects/custom_objects/tv/tvbox";
-static const ALIGN_ASSET(2) char snes_model[] = "__OTR__objects/custom_objects/snes/snes";
-static const ALIGN_ASSET(2) char snes_controller_model[] = "__OTR__objects/custom_objects/snesController/snesController";
+// Objects
+extern void SpawnDoomTV(void);
