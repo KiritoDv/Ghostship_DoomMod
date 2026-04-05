@@ -1,0 +1,4 @@
+build/
+output/*
+!output/manifest.json
+.DS_Store
