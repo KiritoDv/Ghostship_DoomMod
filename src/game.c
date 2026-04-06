@@ -5,14 +5,20 @@
 
 #include "doom.h"
 #include "sm64.h"
-#include "util/objects.h"
+#include "library.h"
+#include "objs/models.h"
 #include "port/events/Events.h"
 #include "game/game_init.h"
 #include "port/api/ui.h"
-#include "util/draw.h"
 
 ListenerID gListenerIDs[4];
 uint8_t* gDoomScreenBuffer = NULL;
+
+void SetupModels() {
+    CallUtil(RegisterModel, "ModelTVBox", tv_model, MODEL_DISPLAY_LIST, MODEL_PRIVATE);
+    CallUtil(RegisterModel, "ModelSnes", snes_model, MODEL_DISPLAY_LIST, MODEL_PRIVATE);
+    CallUtil(RegisterModel, "ModelSnesController", snes_controller_model, MODEL_DISPLAY_LIST, MODEL_PRIVATE);
+}
 
 void SetupUI() {
     C_WidgetConfig chk = {0};
@@ -24,7 +30,7 @@ void SetupUI() {
     C_AddWidget("Doom", 1, "Enable TV Spawn", &chk);
 }
 
-int stick_to_key(f32 axis, int is_y_axis) {
+int StickToKey(f32 axis, int is_y_axis) {
     if (axis > 40.0f) {
         return is_y_axis ? DOOMKEY_UPARROW : DOOMKEY_RIGHTARROW;
     } else if (axis < -40.0f) {
@@ -33,7 +39,7 @@ int stick_to_key(f32 axis, int is_y_axis) {
     return 0;
 }
 
-void send_key_if_not_zero(int key, int pressed) {
+void SendKeyIfNotZero(int key, int pressed) {
     if (key != 0) {
         DoomDLL_Input(pressed, key);
     }
@@ -46,10 +52,10 @@ void HandleDoomInput() {
     static f32 prev_stick_y = 0.0f;
     static u16 prev_buttons = 0;
 
-    int prev_x_key = stick_to_key(prev_stick_x, 0);
-    int cur_x_key  = stick_to_key(input->stickX, 0);
-    int prev_y_key = stick_to_key(prev_stick_y, 1);
-    int cur_y_key  = stick_to_key(input->stickY, 1);
+    int prev_x_key = StickToKey(prev_stick_x, 0);
+    int cur_x_key  = StickToKey(input->stickX, 0);
+    int prev_y_key = StickToKey(prev_stick_y, 1);
+    int cur_y_key  = StickToKey(input->stickY, 1);
 
     if (prev_x_key != cur_x_key) {
         if (prev_x_key != 0) DoomDLL_Input(0, prev_x_key); 
@@ -88,17 +94,16 @@ void OnGameRender(IEvent* event) {
 }
 
 MOD_INIT() {
-    gDoomScreenBuffer = (uint8_t*) malloc(DOOMGENERIC_RESX * DOOMGENERIC_RESY * 4);
-
+    SetupModels();
     SetupUI();
-    DoomDLL_Initialize(NULL);
+    DoomDLL_Initialize("doom.wad");
+
+    gDoomScreenBuffer = (uint8_t*) malloc(DOOMGENERIC_RESX * DOOMGENERIC_RESY * 4);
     gListenerIDs[0] = REGISTER_LISTENER(RenderGamePost, EVENT_PRIORITY_NORMAL, OnGameRender);
-    gListenerIDs[1] = REGISTER_LISTENER(LevelScriptBeginArea, EVENT_PRIORITY_NORMAL, OnLoadArea);
 }
 
 MOD_EXIT() {
     free(gDoomScreenBuffer);
     C_RemoveSidebarEntry("Doom");
     UNREGISTER_LISTENER(RenderGamePost, gListenerIDs[0]);
-    UNREGISTER_LISTENER(LevelScriptBeginArea, gListenerIDs[1]);
 }

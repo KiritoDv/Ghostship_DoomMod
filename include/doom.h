@@ -31,7 +31,7 @@ extern uint32_t* DG_ScreenBuffer;
     } \
 }
 
-extern void DoomDLL_Initialize(uint8_t *rdram);
+extern void DoomDLL_Initialize(const char* wad);
 extern void DoomDLL_Tick(uint8_t *rdram);
 extern void DoomDLL_Input(int pressed, unsigned char doomKey);
 extern void DoomDLL_ScreenCopy(uint8_t *rdram);

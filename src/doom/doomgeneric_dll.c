@@ -77,10 +77,8 @@ void DG_SetWindowTitle(const char *title) {
     // Does nothing.
 }
 
-void DoomDLL_Initialize(uint8_t *rdram) {
-    // std::u8string modsPath = _arg_u8string<0>(rdram, ctx);
-    const char* modsPath = "mods";
-    snprintf(s_WadPath, MAX_PATH_LENGTH, "%s/DOOM1.WAD", (const char *)(modsPath));
+void DoomDLL_Initialize(const char* wad) {
+    snprintf(s_WadPath, MAX_PATH_LENGTH, "mods/%s", wad);
     doomgeneric_Create(sizeof(s_Argv) / sizeof(char *), (char **)(s_Argv));
 }
 
