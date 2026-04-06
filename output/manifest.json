@@ -6,5 +6,8 @@
     "description": "A mod that brings the classic Doom experience into Ghostship",
     "author": "Lywx",
     "license": "MIT",
+    "dependencies": [
+        "LywxUtils"
+    ],
     "code-version": 1
 }
