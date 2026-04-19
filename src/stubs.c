@@ -51,7 +51,7 @@ int __strcasecmp(const char *s1, const char *s2) {
         us1++;
         us2++;
     }
-    
+
     return custom_tolower(*us1) - custom_tolower(*us2);
 }
 
